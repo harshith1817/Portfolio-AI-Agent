@@ -1,0 +1,70 @@
+{
+    "name": {
+        "first_name": "Harshith",
+        "full_name": "Bhargav Sri Harshith",
+        "surname": "Chintakindi"
+    },
+
+    "location": "Hyderabad, Telangana, India",
+
+    "languages_spoken": [
+        "English",
+        "Telugu",
+        "Hindi"
+    ],
+
+    "hobbies": [
+        "Playing Chess",
+        "Playing Badminton",
+        "Playing Cricket",
+        "Watching Movies",
+        "Watching Web Series"
+    ],
+
+    "favorite_food": "Biryani",
+
+    "favorite_programming_language": "Python",
+
+    "favorite_ai_field": "Generative AI",
+
+    "favorite_project": "AI Powered Portfolio with ResuME",
+
+    "favorite_ide": "Visual Studio Code",
+
+    "operating_system": "Windows",
+
+    "strengths": [
+        "Problem Solving",
+        "Adaptability",
+        "Consistency",
+        "Team Management"
+    ],
+
+    "weaknesses": [
+        "Sometimes spends extra time perfecting work."
+    ],
+
+    "preferred_work_style": [
+        "Independent",
+        "Team Collaboration"
+    ],
+
+    "learning_style": [
+        "Building Real-World Projects",
+        "Online Courses",
+        "Reading Documentation",
+        "Competitive Programming"
+    ],
+
+    "career_goal": "To become a skilled AI Engineer and build impactful AI products.",
+
+    "motivation": "Building real-world AI applications and continuously learning new technologies.",
+
+    "assistant": {
+        "name": "ResuME",
+        "creator": "Bhargav Sri Harshith Chintakindi",
+        "purpose": "To help visitors learn about Harshith's background, skills, projects, and experience."
+    },
+
+    "favorite_quote": "I'm not in danger, I'm the danger."
+}

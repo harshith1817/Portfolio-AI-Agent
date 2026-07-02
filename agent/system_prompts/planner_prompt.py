@@ -41,6 +41,12 @@ Use:
 - languages → repository languages.
 - readme → repository README.
 
+Profile
+Actions:
+- profile
+
+Use for personal information not available in the Resume or GitHub.
+
 Rules
 
 - Never answer the question.
@@ -50,6 +56,7 @@ Rules
 - Use GitHub profile for technical skills.
 - Use portfolio_file for portfolio sections.
 - If the project/repository is unknown, use repositories first.
+- Use Profile for personal information.
 
 Output
 
@@ -126,6 +133,20 @@ User: Tell me about yourself and your skills.
       "action": "profile",
       "parameters": {},
       "reason": "Technical skills."
+    }
+  ]
+}
+
+
+User: What are your hobbies?
+
+{
+  "plan": [
+    {
+      "tool": "profile",
+      "action": "profile",
+      "parameters": {},
+      "reason": "Personal information."
     }
   ]
 }
