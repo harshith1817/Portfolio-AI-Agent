@@ -12,7 +12,7 @@ class PortfolioParser:
             return self.extract_certifications(jsx)
         
         elif section == "achievements":
-            return self.extract_certifications(jsx)
+            return self.extract_achievements(jsx)
         
         elif section == "about":
             return self.extract_about(jsx)
@@ -36,16 +36,14 @@ class PortfolioParser:
 
         for block in project_blocks:
 
-            name_match = re.search(
+            name = self.extract(
                 r"<ProjectHeading>(.*?)</ProjectHeading>",
-                block,
-                re.DOTALL
+                block
             )
 
-            description_match = re.search(
+            description = self.extract(
                 r"<ProjectDesc>(.*?)</ProjectDesc>",
-                block,
-                re.DOTALL
+                block
             )
 
             links = re.findall(
@@ -60,15 +58,8 @@ class PortfolioParser:
                 "demo": ""
             }
 
-            if name_match:
-                project["name"] = " ".join(
-                    name_match.group(1).split()
-                )
-
-            if description_match:
-                project["description"] = " ".join(
-                    description_match.group(1).split()
-                )
+            project["name"] = name
+            project["description"] = description
 
             if len(links) >= 1:
                 project["github"] = links[0]
@@ -94,43 +85,50 @@ class PortfolioParser:
 
         for block in certificate_blocks:
 
-            title = re.search(
+            title = self.extract(
                 r"<CertificationTitle>.*?/>?(.*?)</CertificationTitle>",
-                block,
-                re.DOTALL
-            )
-
-            organization = re.search(
-                r"<CertificationOrganization>(.*?)</CertificationOrganization>",
-                block,
-                re.DOTALL
-            )
-
-            description = re.search(
-                r"<CertificationDescription>(.*?)</CertificationDescription>",
-                block,
-                re.DOTALL
-            )
-
-            skills = re.findall(
-                r"<Skills>(.*?)</Skills>",
                 block
             )
 
-            credential = re.search(
+            organization = self.extract(
+                r"<CertificationOrganization>(.*?)</CertificationOrganization>",
+                block
+            )
+
+            description = self.extract(
+                r"<CertificationDescription>(.*?)</CertificationDescription>",
+                block
+            )
+
+            skills = [
+                self.clean_text(skill)
+                for skill in re.findall(
+                    r"<Skills>(.*?)</Skills>",
+                    block,
+                    re.DOTALL
+                )
+            ]
+
+            credential = self.extract_url(
                 r'href="([^"]+)"',
                 block
             )
 
             certifications.append(
                 {
-                    "title": " ".join(title.group(1).split()) if title else "",
-                    "organization": " ".join(organization.group(1).split()) if organization else "",
-                    "description": " ".join(description.group(1).split()) if description else "",
-                    "skills": [skill.strip() for skill in skills],
-                    "credential": credential.group(1) if credential else ""
+                    "title": title,
+                    "organization": organization,
+                    "description": description,
+                    "skills": skills,
+                    "credential": credential
                 }
             )
+
+        return {
+            "certifications": certifications
+        }
+
+    def extract_achievements(self, jsx: str):
 
         achievements = []
 
@@ -142,44 +140,39 @@ class PortfolioParser:
 
         for block in achievement_blocks:
 
-            badge = re.search(
+            badge = self.extract(
                 r"<BadgeSpan>(.*?)</BadgeSpan>",
-                block,
-                re.DOTALL
+                block
             )
 
-            title = re.search(
+            title = self.extract(
                 r"<h3.*?>(.*?)</h3>",
-                block,
-                re.DOTALL
+                block
             )
 
-            description = re.search(
+            description = self.extract(
                 r"<AcheivementDescription>(.*?)</AcheivementDescription>",
-                block,
-                re.DOTALL
+                block
             )
 
-            link = re.search(
+            url = self.extract_url(
                 r'window\.open\(\s*"([^"]+)"',
-                block,
-                re.DOTALL
+                block
             )
 
             achievements.append(
                 {
-                    "title": " ".join(title.group(1).split()) if title else "",
-                    "badge": " ".join(badge.group(1).split()) if badge else "",
-                    "description": " ".join(description.group(1).split()) if description else "",
-                    "url": link.group(1) if link else ""
+                    "title": title,
+                    "badge": badge,
+                    "description": description,
+                    "url": url
                 }
             )
 
         return {
-            "certifications": certifications,
             "achievements": achievements
         }
-
+        
     def extract_about(self, jsx: str):
 
         bio = []
@@ -217,49 +210,58 @@ class PortfolioParser:
         return {
             "bio": bio
         }
+        
+    def extract_url(self, pattern: str, text: str) -> str:
+
+        match = re.search(
+            pattern,
+            text,
+            re.DOTALL
+        )
+
+        return match.group(1) if match else ""
 
     def extract_contact(self, jsx: str):
 
+        patterns = {
+            "github": r'https://github\.com/[^"\']+',
+            "linkedin": r'https://www\.linkedin\.com/[^"\']+',
+            "email": r'mailto:([^"\']+)',
+            "instagram": r'https://www\.instagram\.com/[^"\']+',
+            "twitter": r'https://www\.x\.com/[^"\']+'
+        }
+
         contacts = {}
 
-        github = re.search(
-            r'https://github\.com/[^"\']+',
-            jsx
-        )
+        for key, pattern in patterns.items():
 
-        linkedin = re.search(
-            r'https://www\.linkedin\.com/[^"\']+',
-            jsx
-        )
+            match = re.search(pattern, jsx)
 
-        email = re.search(
-            r'mailto:([^"\']+)',
-            jsx
-        )
+            if match:
 
-        instagram = re.search(
-            r'https://www\.instagram\.com/[^"\']+',
-            jsx
-        )
-
-        twitter = re.search(
-            r'https://www\.x\.com/[^"\']+',
-            jsx
-        )
-
-        if github:
-            contacts["github"] = github.group(0)
-
-        if linkedin:
-            contacts["linkedin"] = linkedin.group(0)
-
-        if email:
-            contacts["email"] = email.group(1)
-
-        if instagram:
-            contacts["instagram"] = instagram.group(0)
-
-        if twitter:
-            contacts["twitter"] = twitter.group(0)
+                contacts[key] = match.group(1) if key == "email" else match.group(0)
 
         return contacts
+    
+    def clean_text(self, text: str) -> str:
+
+        if not text:
+            return ""
+
+        text = re.sub(r"</?Diff>", "", text)
+        text = re.sub(r"<.*?>", "", text)
+
+        return " ".join(text.split())
+    
+    def extract(self, pattern: str, text: str) -> str:
+
+        match = re.search(
+            pattern,
+            text,
+            re.DOTALL
+        )
+
+        if not match:
+            return ""
+
+        return self.clean_text(match.group(1))
