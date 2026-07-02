@@ -1,30 +1,35 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
-from agent.portfolio_agent import PortfolioAgent
 from api.schemas import ChatRequest, ChatResponse
+from agent.portfolio_agent import PortfolioAgent
 
 router = APIRouter()
 
 agent = PortfolioAgent()
 
 
-@router.get("/")
-def root():
-    return {
-        "message": "Welcome to Portfolio AI Agent"
-    }
-
-
-@router.get("/health")
-def health():
-    return {
-        "status": "healthy"
-    }
-
-
 @router.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest):
 
-    answer = agent.chat(request.question)
+    try:
 
-    return ChatResponse(answer=answer)
+        response = agent.chat(request.message)
+
+        return ChatResponse(
+            success=response["success"],
+            answer=response["answer"]
+        )
+
+    except Exception as e:
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
+
+@router.get("/health")
+def health():
+
+    return {
+        "status": "healthy"
+    }

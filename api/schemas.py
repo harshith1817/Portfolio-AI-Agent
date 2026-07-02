@@ -2,8 +2,9 @@ from pydantic import BaseModel
 
 
 class ChatRequest(BaseModel):
-    question: str
+    message: str
 
 
 class ChatResponse(BaseModel):
+    success: bool
     answer: str
