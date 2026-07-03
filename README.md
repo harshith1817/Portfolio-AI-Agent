@@ -1,3 +1,12 @@
+---
+title: Portfolio AI Agent
+emoji: 🤖
+colorFrom: purple
+colorTo: blue
+sdk: docker
+pinned: false
+---
+
 # 🤖 Portfolio AI Agent
 
 An intelligent, agent-based AI assistant built to power my personal portfolio.
