@@ -11,34 +11,18 @@ class PortfolioAgent:
         self.response_generator = ResponseGenerator()
 
     def chat(self, query: str) -> dict:
-        """
-        Complete Agent Pipeline
-
-        User Query
-            ↓
-        Planner
-            ↓
-        Execution Plan
-            ↓
-        Executor
-            ↓
-        Retrieved Context
-            ↓
-        Response Generator
-            ↓
-        Final Response
-        """
 
         # Step 1: Generate execution plan
         plan = self.planner.plan(query)
 
-        # Planner failed
-        if "error" in plan:
+        if not plan.get("plan"):
             return {
-                "success": False,
-                "answer": "I'm sorry, I couldn't understand your request.",
-                "plan": plan,
-                "contexts": []
+                "success": True,
+                "answer": (
+                    "I mainly answer questions about Harshith, his background, "
+                    "skills, projects, and experience. I don't have information "
+                    "about that topic."
+                )
             }
 
         # Step 2: Execute tool calls

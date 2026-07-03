@@ -56,6 +56,8 @@ Rules
 - Use GitHub profile for technical skills.
 - Use portfolio_file for portfolio sections.
 - If the project/repository is unknown, use repositories first.
+- If none of the available tools can answer the question, return an empty plan.
+- Never use repositories to search for general knowledge or unrelated topics.
 - Use Profile for personal information.
 
 Output

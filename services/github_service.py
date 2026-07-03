@@ -40,7 +40,17 @@ class GitHubService:
         if self._repositories_cache is not None:
             return self._repositories_cache
 
-        self._repositories_cache = self.client.get_repositories()
+        repositories = self.client.get_repositories()
+
+        self._repositories_cache = [
+            {
+                "name": repo.get("name"),
+                "description": repo.get("description"),
+                "language": repo.get("language"),
+                "url": repo.get("html_url")
+            }
+            for repo in repositories
+        ]
 
         return self._repositories_cache
 
